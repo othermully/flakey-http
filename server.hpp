@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -79,7 +80,7 @@ private:
       }
 
       // Build the request object -> Middleware + Routing + Handler
-      std::cout << "Received from client: \n" << buffer;
+      // std::cout << "Received from client: \n" << buffer;
       Request req = parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
                                                  // When ready, the handler that the req was sent to will create a response
                                                  // The server will serialize that response and send back to the client
@@ -89,13 +90,18 @@ private:
         // req.JSON = json;
       }
 
+      // Generate response, serialize it, send it, done
       Response res = router.routeHandler(req); // This router should dispatch the request to the correct handler
+      std::string response_payload = serializeResponse(res);
+      send(client_fd, response_payload.c_str(), response_payload.size(), 0);
 
       // DEBUG
       std::cout << "Method ==> "     << req.m_method << '\n';
       std::cout << "Path ==> "       << req.m_path << '\n';
       std::cout << "Host ==> "       << req.m_host << '\n';
       std::cout << "User-Agent ==> " << req.m_user_agent << '\n';
+
+      close(client_fd);
     }
 
   }
@@ -109,6 +115,19 @@ private:
     m_server_addr.sin_addr.s_addr = INADDR_ANY;
     return server_socket;
   }
+
+  std::string serializeResponse(Response& res)
+  {
+    std::string temp{};
+    std::cout << "Serializing response...\n";
+
+    // Header example: HTTP/1.1 - technically this is a status line, will work on this later, maybe
+    // TODO: Status code should resolve to string (e.g. 200 = "200 OK")
+    // TODO: Need some kind of HTML rendering function that serializes HTML, JS and CSS to send as payload when requested
+    temp = res.m_header + " " + std::to_string(res.m_status_code) + " OK\r\n" + res.m_content_type + "\r\n\r\n\n" + res.m_payload;
+    return temp;
+  }
+
 };
 
 } // End of namespace

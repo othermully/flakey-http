@@ -36,9 +36,11 @@ public:
 
   Response routeHandler(Request& req)
   {
-    std::string header{};
-    std::string payload{};
-    Response res(header, payload);
+    std::string header{ "HTTP/1.1" };
+    std::string payload{ "TESTING" };
+    short status_code { 200 };
+    std::string content_type{ "text/html" };
+    Response res(header, payload, content_type, status_code);
 
     for (const auto& r : m_routes ){
       if (req.m_path == r.path) {

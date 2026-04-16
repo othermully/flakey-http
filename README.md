@@ -15,5 +15,47 @@ Flakey is only able to serve static HTML content, read/write JSON and handle URL
 - Create your own routes, and route handlers - WIP
 - Support for reading and writing JSON - WIP
 
-## **Requirements**
 ## **Usage**
+### Starting Server 
+```
+#include "server.hpp"
+#include "request.hpp"
+#include "response.hpp"
+
+int main(){
+  // Create the server object
+  int port    { 8080 };
+  int backlog { 10 };
+  HTTPServer::Server server(port, backlog);
+
+  // Run the server
+  server.run();
+}
+```
+### Building routes
+- User is responsible for building the handlers
+- All handlers must have a return type of HTTPResponse
+- All handlers must have a HTTPRequest& param
+```
+HTTPResponse exampleHandler(HTTPRequest& req)
+{
+  std::string header = "HTTP/1.1";
+  std::string payload = "<h1> Hello, World! </h1>";
+  short status_code = 200;
+  std::string content_type = "text/html";
+
+  HTTPResponse res(header, payload, content_type, status_code);
+  return res;
+}
+
+```
+
+### Rendering HTML
+- In order to render HTML, you only need to read a .html file into a string, then pass that string as the "payload"
+
+## ToDos:
+- JSON Parser 
+- .html, .css, and .js file handling
+- Logging
+- Stop hard coding shit
+- Serializer is garbage, keep working on it

@@ -37,7 +37,7 @@ int main(){
 - All handlers must have a return type of HTTPResponse
 - All handlers must have a HTTPRequest& param
 
-** Adding a route **
+**Adding a route**
 ```
 // addRoute(string METHOD, string PATH, callable)
 server.addRoute("GET", "/index", index_handler)
@@ -66,3 +66,9 @@ HTTPResponse exampleHandler(HTTPRequest& req)
 - Logging
 - Stop hard coding shit
 - Serializer is garbage, keep working on it
+
+## Resoucres used:
+- Beej network programming guide: https://beej.us/guide/bgnet/html/split/index.html
+- POSIX Programmer's Manual (man pages)
+- JSON parsing inspo: https://dev.to/uponthesky/c-making-a-simple-json-parser-from-scratch-250g
+- cppreference: https://cppreference.com/

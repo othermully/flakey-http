@@ -5,11 +5,21 @@
 #include "response.hpp"
 
 
-void index_handler([[maybe_unused]]HTTPRequest& req, [[maybe_unused]]HTTPResponse& res){
-  std::cout << "Running idex_handler.\n";
+// Handler creation example
+HTTPResponse index_handler([[maybe_unused]]HTTPRequest& req)
+{
+  std::cout << "Running index_handler.\n";
+  std::cout << "PATH ==> " << req.m_path << '\n';
+  std::cout << "METHOD ==> " << req.m_method << '\n';
+
+  std::string header = "TESTING";
+  std::string payload = "THIS IS A PAYLOAD";
+  HTTPResponse res(header, payload);
+  return res;
 }
 
-int main(){
+int main()
+{
   int port    { 8080 };
   int backlog { 10 };
 

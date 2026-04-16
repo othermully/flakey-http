@@ -10,5 +10,4 @@ public:
     m_header  = header;
     m_payload = payload;
   }
-  ~HTTPResponse();
 };

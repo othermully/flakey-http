@@ -1,21 +1,22 @@
 /*
  HTTP Server
  Constructed with a port and backlog
- start the server with server.startServer()
+ start the server with server.run()
 */
+
+#pragma once
 
 #include <cstdint>
 #include <iostream>
-#include <stdexcept>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-#include <vector>
 #include <functional>
 #include "response.hpp"
 #include "request.hpp"
 #include "http-parser.hpp"
+#include "http-router.hpp"
 
 
 namespace HTTPServer{
@@ -24,18 +25,14 @@ using Response = HTTPResponse;
 
 class Server{
 public:
-  struct Route{
-    std::string method{};
-    std::string path{};
-    std::function<void(Request&, Response&)> handler;
-  };
-  std::vector<Route> routes{};
-
   int m_sockfd{};
   int m_port{};
   sockaddr_in m_server_addr{};
   int m_backlog{}; 
+
   HTTPParser::Parser parser{};
+  HTTPRouter::Router router{};
+
 
   // Constructor
   Server(int port, int backlog){
@@ -44,17 +41,9 @@ public:
   };
 
 
-  void addRoute(const std::string method, const std::string path, std::function<void(Request&, Response&)> handler)
+  void addRoute(const std::string method, const std::string path, std::function<Response(Request&)> handler)
   {
-    if (path[0] != '/') {
-      throw std::runtime_error("Path must begin with a /. (e.g. /get_users)");
-    }
-
-    Route route{};
-    route.method  = method;
-    route.path    = path;
-    route.handler = handler;
-    routes.push_back(route);
+    router.addRoute(method, path, handler);
   }
 
   void run()
@@ -94,8 +83,16 @@ private:
       Request req = parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
                                                  // When ready, the handler that the req was sent to will create a response
                                                  // The server will serialize that response and send back to the client
+      if (!req.m_body.empty()) {
+        // WARN: Assuming JSON only in body
+        // JSON json = parseJson(req.m_body) ;
+        // req.JSON = json;
+      }
 
-      std::cout << "Method ==> "     <<  req.m_method << '\n';
+      Response res = router.routeHandler(req); // This router should dispatch the request to the correct handler
+
+      // DEBUG
+      std::cout << "Method ==> "     << req.m_method << '\n';
       std::cout << "Path ==> "       << req.m_path << '\n';
       std::cout << "Host ==> "       << req.m_host << '\n';
       std::cout << "User-Agent ==> " << req.m_user_agent << '\n';

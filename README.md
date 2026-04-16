@@ -36,6 +36,14 @@ int main(){
 - User is responsible for building the handlers
 - All handlers must have a return type of HTTPResponse
 - All handlers must have a HTTPRequest& param
+
+** Adding a route **
+```
+// addRoute(string METHOD, string PATH, callable)
+server.addRoute("GET", "/index", index_handler)
+```
+
+**Route Handler**
 ```
 HTTPResponse exampleHandler(HTTPRequest& req)
 {
@@ -47,7 +55,6 @@ HTTPResponse exampleHandler(HTTPRequest& req)
   HTTPResponse res(header, payload, content_type, status_code);
   return res;
 }
-
 ```
 
 ### Rendering HTML

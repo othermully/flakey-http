@@ -5,6 +5,7 @@
 #include "response.hpp"
 #include "html-render.hpp"
 
+// WARN: This is a usage example file - you are only required to import the header files into your project
 
 // Handler creation example
 HTTPResponse index_handler([[maybe_unused] ]HTTPRequest& req)
@@ -21,6 +22,7 @@ HTTPResponse index_handler([[maybe_unused] ]HTTPRequest& req)
   return res;
 }
 
+// HTML Rendering example
 HTTPResponse home([[maybe_unused]] HTTPRequest& req)
 {
   HTMLRender::Renderer render{};
@@ -37,6 +39,7 @@ HTTPResponse home([[maybe_unused]] HTTPRequest& req)
 
 int main()
 {
+  // Server creation and route creation
   HTTPServer::Server server(8080, 10);
   server.addRoute("GET", "/index", index_handler);
   server.addRoute("GET", "/home", home);

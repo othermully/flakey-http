@@ -6,6 +6,8 @@
 #include "request.hpp"
 #include "response.hpp"
 
+// TODO: If javascript and css are requested on the page, the router should be able to send those when requested
+
 namespace HTTPRouter{
 using Request = HTTPRequest;
 using Response = HTTPResponse;
@@ -42,14 +44,13 @@ public:
     std::string content_type{ "text/html" };
     Response res(header, payload, content_type, status_code);
 
-    // TODO: Will always print that the path doesn't exist
     for (const auto& r : m_routes ){
       if (req.m_path == r.path) {
         Response res = r.handler(req);
         return res;
       }
       else {
-        std::cerr << "Path: " << req.m_path << " does not exist.\n";
+        continue;
       }
     }
     return res;

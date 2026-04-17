@@ -17,8 +17,8 @@ public:
     if (std::filesystem::exists(path)) {
       std::cout << "File found: " << path << '\n';
 
-      std::ifstream ifs(file_name);
-      std::string html( (std::istreambuf_iterator<char>(ifs) ),( std::istreambuf_iterator<char>() ) );
+      std::ifstream ifs(path);
+      std::string html ( (std::istreambuf_iterator<char>(ifs) ),( std::istreambuf_iterator<char>() ) );
 
       return html;
     }

@@ -87,8 +87,10 @@ private:
                                                  // The server will serialize that response and send back to the client
       if (!req.m_body.empty()) {
         // WARN: Assuming JSON only in body
-        // JSON json = parseJson(req.m_body) ;
-        // req.JSON = json;
+        std::cout << "Req contains JSON\n";
+        size_t i = 0;
+        JSONParser::JSON json = json_parser.parseValue(req.m_body, i) ;
+         req.m_json= json;
       }
 
       // Generate response, serialize it, send it, done
@@ -109,7 +111,7 @@ private:
 
   int getServerFd()
   {
-    uint16_t port = static_cast<uint16_t>(m_port);
+    uint16_t port                 = static_cast<uint16_t>(m_port);
     int server_socket             = socket(AF_INET, SOCK_STREAM, 0);
     m_server_addr.sin_family      = AF_INET;
     m_server_addr.sin_port        = htons(port);

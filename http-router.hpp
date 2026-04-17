@@ -42,6 +42,7 @@ public:
     std::string content_type{ "text/html" };
     Response res(header, payload, content_type, status_code);
 
+    // TODO: Will always print that the path doesn't exist
     for (const auto& r : m_routes ){
       if (req.m_path == r.path) {
         Response res = r.handler(req);

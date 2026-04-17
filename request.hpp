@@ -1,8 +1,10 @@
 #pragma once
 #include <iostream>
+#include "json.hpp"
 
 class HTTPRequest{
 public:
+  JSONParser::JSON m_json{};
   std::string m_method{};
   std::string m_path{};
   std::string m_body{}; // Not sure how to handle this one yet

@@ -14,6 +14,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <functional>
+#include "json.hpp"
 #include "response.hpp"
 #include "request.hpp"
 #include "http-parser.hpp"
@@ -31,9 +32,9 @@ public:
   sockaddr_in m_server_addr{};
   int m_backlog{}; 
 
-  HTTPParser::Parser parser{};
-  HTTPRouter::Router router{};
-
+  HTTPParser::Parser http_parser{};
+  HTTPRouter::Router http_router{};
+  JSONParser::Parser json_parser{};
 
   // Constructor
   Server(int port, int backlog){
@@ -44,7 +45,7 @@ public:
 
   void addRoute(const std::string method, const std::string path, std::function<Response(Request&)> handler)
   {
-    router.addRoute(method, path, handler);
+    http_router.addRoute(method, path, handler);
   }
 
   void run()
@@ -81,7 +82,7 @@ private:
 
       // Build the request object -> Middleware + Routing + Handler
       // std::cout << "Received from client: \n" << buffer;
-      Request req = parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
+      Request req = http_parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
                                                  // When ready, the handler that the req was sent to will create a response
                                                  // The server will serialize that response and send back to the client
       if (!req.m_body.empty()) {
@@ -91,7 +92,7 @@ private:
       }
 
       // Generate response, serialize it, send it, done
-      Response res = router.routeHandler(req); // This router should dispatch the request to the correct handler
+      Response res = http_router.routeHandler(req); // This router should dispatch the request to the correct handler
       std::string response_payload = serializeResponse(res);
       send(client_fd, response_payload.c_str(), response_payload.size(), 0);
 
@@ -109,10 +110,11 @@ private:
   int getServerFd()
   {
     uint16_t port = static_cast<uint16_t>(m_port);
-    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    m_server_addr.sin_family = AF_INET;
-    m_server_addr.sin_port = htons(port);
+    int server_socket             = socket(AF_INET, SOCK_STREAM, 0);
+    m_server_addr.sin_family      = AF_INET;
+    m_server_addr.sin_port        = htons(port);
     m_server_addr.sin_addr.s_addr = INADDR_ANY;
+
     return server_socket;
   }
 

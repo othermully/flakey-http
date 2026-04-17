@@ -1,3 +1,7 @@
+// TODO: Negative number handling 
+// TODO: Decimal point handling
+// TODO: parse bools
+// TODO: parse NULLs
 #pragma once
 #include <cctype>
 #include <cstddef>
@@ -10,27 +14,24 @@
 #include <vector>
 #include <variant>
 
-// TODO: Need to build an API to allow users to easily access JSON key/values
-
 namespace JSONParser{
+struct JSON;
+using Object = std::map<std::string, JSON>;
+using Array  = std::vector<JSON>;
+
+struct JSON{
+  std::variant<
+    std::nullptr_t,
+    double,
+    std::string,
+    Object,
+    Array
+    > value{};
+};
+
 class Parser{
 public:
-
-  struct JSON;
-  using Object = std::map<std::string, JSON>;
-  using Array  = std::vector<JSON>;
-
-  struct JSON{
-    std::variant<
-      std::nullptr_t,
-      double,
-      std::string,
-      Object,
-      Array
-      > value;
-  };
-
-  // Dispatcher
+    // Dispatcher
   JSON parseValue(const std::string& str, size_t& i)
   {
     skipWhitespace(str, i);
@@ -50,9 +51,6 @@ public:
 
     return JSON{}; // This should be handled, return empty struct for now
   }
-
-
-
   
 private:
   void skipWhitespace(const std::string& str, size_t& i)
@@ -147,25 +145,15 @@ private:
     skipWhitespace(str, i);
     std::string s{};
     ++i; // Consume the opening '"'
-    if (str[i] == '"') {
-      ++i; // consume closing '"'
-      return JSON{s};
+    while (true) {
+      s += str[i];
+      ++i;
+      if (str[i] == '"') {
+        ++i; // consume closing '"'
+        return JSON{s};
+      }
     }
-
   }
-};
-
-class API{
-// TODO: Builder JSON key/value access functions here
-// TODO: I think this should also serialize parsed JSON in order to send back to client
-// Access JSON objects like this: JSON j = jparser.parseValue(string);
-// std::string name = j["name"];
-// find type -> get value -> access fields/array elements
-public:
-  std::optional<std::string> getValue(Parser::JSON& t, std::string_view input_key);
-
-private:
-  void getType();
 
 };
 

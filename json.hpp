@@ -51,16 +51,18 @@ public:
 
     return JSON{}; // This should be handled, return empty struct for now
   }
+
+  static std::string serializeJson(const JSON& j);
   
 private:
-  void skipWhitespace(const std::string& str, size_t& i)
+  static void skipWhitespace(const std::string& str, size_t& i)
   {
     while (i < str.size() && std::isspace(str[i])) {
       ++i;
     }
   }
 
-  std::string_view getSubstring(std::string_view sv, size_t& i)
+  static std::string_view getSubstring(std::string_view sv, size_t& i)
   {
     return sv.substr(i, sv.size());
   }

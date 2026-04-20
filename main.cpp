@@ -37,12 +37,26 @@ HTTPResponse home([[maybe_unused]] HTTPRequest& req)
 
 }
 
+HTTPResponse form([[maybe_unused]] HTTPRequest& req)
+{
+  HTMLRender::Renderer render{};
+  const std::string file_name    = "form.html";
+  const std::string header       = "HTTP/1.1";
+  const std::string payload      = render.renderHtml(file_name);
+  const short status_code        = 200;
+  const std::string content_type = "text/html";
+
+  HTTPResponse res(header, payload, content_type, status_code);
+  return res;
+}
+
 int main()
 {
   // Server creation and route creation
   HTTPServer::Server server(8080, 10);
   server.addRoute("GET", "/index", index_handler);
   server.addRoute("GET", "/home", home);
+  server.addRoute("GET", "/form", form);
   server.run();
 
   return 0;

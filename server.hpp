@@ -81,16 +81,18 @@ private:
       }
 
       // Build the request object -> Middleware + Routing + Handler
-       std::cout << "Received from client: \n" << buffer;
+      std::cout << "Received from client: \n" << buffer << '\n';
       Request req = http_parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
                                                  // When ready, the handler that the req was sent to will create a response
                                                  // The server will serialize that response and send back to the client
+
+      // TODO: This should be handled in the parser, i think
       if (!req.m_body.empty()) {
         // WARN: Assuming JSON only in body
         std::cout << "Req contains JSON\n";
         size_t i = 0;
         JSONParser::JSON json = json_parser.parseValue(req.m_body, i) ;
-         req.m_json= json;
+         req.m_json = json;
       }
 
       // Generate response, serialize it, send it, done

@@ -2,6 +2,10 @@
 #include <sstream>
 #include <string>
 
+// TODO: Need to fill request body if it exists
+// TODO: If content-length exists, then a body should exists, read only that # of bytes
+// TODO: Body delimeter = \r\n\r\n
+
 namespace HTTPParser{
 using Request = HTTPRequest;
 
@@ -40,6 +44,7 @@ public:
       if (value == "Sec-Fetch-Site")  req.m_sec_fetch_site  = line.substr(pos);
       if (value == "Sec-Fetch-User")  req.m_sec_fetch_user  = line.substr(pos);
       if (value == "Priority")        req.m_priority        = line.substr(pos);
+
     }
 
     return req;

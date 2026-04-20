@@ -159,4 +159,13 @@ private:
 
 };
 
+class Serializer{
+public:
+  static std::string serialize(JSON& j);
+
+private:
+  void getType(JSON& j);
+  void getValue(JSON& j);
+};
+
 } // End of namespace

@@ -159,4 +159,9 @@ HTTPResponse exampleHandler(HTTPRequest& req)
 - `body` (string, optional)
 - partial or raw headers 
 
+## Stuff
+JSON parser seems unessecary as its outside of project scope
+There is still lots to do, but I'm pausing the work on this as I feel I have learned what I originally wanted to, and am ready to move onto my next project.
+HTTP sent me down a rabbit hole - lost track of network-focused programming. 
+
 

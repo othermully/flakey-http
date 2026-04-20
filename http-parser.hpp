@@ -14,8 +14,18 @@ public:
 
   Request parseRequest(const std::string& raw_req)
   {
+
     Request req;
-    std::istringstream f(raw_req);
+
+    size_t header_end = raw_req.find("\r\n\r\n");
+    std::string headers_part = raw_req.substr(0, header_end);
+    std::string body_part = "";
+
+    if (header_end != std::string::npos) {
+      body_part = raw_req.substr(header_end + 4);
+    }
+
+    std::istringstream f(headers_part);
     std::string line;
 
     size_t status_pos = raw_req.find("\n");
@@ -26,6 +36,8 @@ public:
 
     while (std::getline(f, line))
     {
+
+
       char delimiter = ':';
       size_t pos = line.find(delimiter);
       std::string value = line.substr(0, pos);
@@ -44,8 +56,18 @@ public:
       if (value == "Sec-Fetch-Site")  req.m_sec_fetch_site  = line.substr(pos);
       if (value == "Sec-Fetch-User")  req.m_sec_fetch_user  = line.substr(pos);
       if (value == "Priority")        req.m_priority        = line.substr(pos);
+      if (value == "Content-Length")  req.m_content_length  = line.substr(pos);
 
     }
+
+    if (!req.m_content_length.empty()) {
+      size_t len = std::stoul(req.m_content_length);
+      if (body_part.size() >= len) {
+        req.m_body = body_part.substr(0, len);
+      }
+    }
+
+    std::cout << "BODY==> " << req.m_body << '\n';
 
     return req;
   }

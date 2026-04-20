@@ -87,13 +87,13 @@ private:
                                                  // The server will serialize that response and send back to the client
 
       // TODO: This should be handled in the parser, i think
-      if (!req.m_body.empty()) {
-        // WARN: Assuming JSON only in body
-        std::cout << "Req contains JSON\n";
-        size_t i = 0;
-        JSONParser::JSON json = json_parser.parseValue(req.m_body, i) ;
-         req.m_json = json;
-      }
+     // if (!req.m_body.empty()) {
+     //   // WARN: Assuming JSON only in body
+     //   std::cout << "Req contains JSON\n";
+     //   size_t i = 0;
+     //   JSONParser::JSON json = json_parser.parseValue(req.m_body, i) ;
+     //    req.m_json = json;
+     // }
 
       // Generate response, serialize it, send it, done
       Response res = http_router.routeHandler(req); // This router should dispatch the request to the correct handler

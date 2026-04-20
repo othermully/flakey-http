@@ -4,6 +4,8 @@
 #include <sstream>
 #include <filesystem>
 
+// TODO: Probably don't even need this class yet, handle this within the router
+
 namespace HTMLRender{
 
 class Renderer{
@@ -25,6 +27,7 @@ public:
 
     return "";
   }
+
 };
 
 } // end of namespace

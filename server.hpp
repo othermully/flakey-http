@@ -81,7 +81,7 @@ private:
       }
 
       // Build the request object -> Middleware + Routing + Handler
-      // std::cout << "Received from client: \n" << buffer;
+       std::cout << "Received from client: \n" << buffer;
       Request req = http_parser.parseRequest(buffer); // Pass this request to middleware loop to enrich/transform it
                                                  // When ready, the handler that the req was sent to will create a response
                                                  // The server will serialize that response and send back to the client
@@ -128,6 +128,9 @@ private:
     // Header example: HTTP/1.1 - technically this is a status line, will work on this later, maybe
     // TODO: Status code should resolve to string (e.g. 200 = "200 OK")
     // TODO: Need some kind of HTML rendering function that serializes HTML, JS and CSS to send as payload when requested
+    if (res.m_status_code == 404) {
+      temp = res.m_header + " " + std::to_string(res.m_status_code) + " Not Found\r\n" + res.m_content_type + "\r\n\r\n\n";
+    }
     temp = res.m_header + " " + std::to_string(res.m_status_code) + " OK\r\n" + res.m_content_type + "\r\n\r\n\n" + res.m_payload;
     return temp;
   }

@@ -52,7 +52,12 @@ public:
     return JSON{}; // This should be handled, return empty struct for now
   }
 
-  static std::string serializeJson(const JSON& j);
+  static bool isValidJson(const std::string& str)
+  {
+    if (str[0] != '{' || str[0] != '[') return false;
+    else return true;
+  }
+
   
 private:
   static void skipWhitespace(const std::string& str, size_t& i)

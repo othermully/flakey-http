@@ -67,7 +67,6 @@ public:
       }
     }
 
-    std::cout << "BODY==> " << req.m_body << '\n';
 
     return req;
   }

@@ -32,6 +32,8 @@ HTTPResponse home([[maybe_unused]] HTTPRequest& req)
   const short status_code        = 200;
   const std::string content_type = "text/html";
 
+  std::cout << req.m_body << '\n';
+
   HTTPResponse res(header, payload, content_type, status_code);
   return res;
 

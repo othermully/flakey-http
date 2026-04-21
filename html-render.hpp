@@ -17,8 +17,6 @@ public:
     std::string path = "./templates/" + file_name;
 
     if (std::filesystem::exists(path)) {
-      std::cout << "File found: " << path << '\n';
-
       std::ifstream ifs(path);
       std::string html ( (std::istreambuf_iterator<char>(ifs) ),( std::istreambuf_iterator<char>() ) );
 
